@@ -31,12 +31,13 @@ async def fetch_photo_from_bot():
     # Wait for bot to reply
     await asyncio.sleep(5)
 
-    # Get last message from bot
-    messages = await client.get_messages(BOT_USERNAME, limit=5)
+    # Get messages ONLY from this specific bot's chat
+    messages = await client.get_messages(BOT_USERNAME, limit=10)
 
     photo_path = None
     for msg in messages:
-        if msg.photo:
+        # Only get photo with caption "cam a" — ignore butterfly bot messages
+        if msg.photo and not msg.out and msg.message and "cam a" in msg.message.lower():
             photo_path = await client.download_media(msg.photo, file=bytes)
             break
 
