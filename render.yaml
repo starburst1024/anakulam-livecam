@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: anakulam-livecam
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
+    envVars:
+      - key: API_ID
+        sync: false
+      - key: API_HASH
+        sync: false
+      - key: SESSION_STR
+        sync: false
+      - key: BOT_USERNAME
+        value: Santhoshgeci_bot
+      - key: KEYWORD
+        value: Nowa
+      - key: CACHE_SECS
+        value: "180"
