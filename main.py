@@ -43,7 +43,7 @@ async def fetch_photo_from_bot():
 
 @app.route("/live-photo", methods=["GET"])
 def live_photo():
-    # Always fetch fresh — no cache
+    # Always fetch fresh — no caches
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
