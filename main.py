@@ -15,6 +15,8 @@ API_HASH     = os.environ.get("API_HASH", "")
 SESSION_STR  = os.environ.get("SESSION_STR", "")
 BOT_USERNAME = os.environ.get("BOT_USERNAME", "Santhoshgeci_bot")
 KEYWORD      = os.environ.get("KEYWORD", "Nowa")
+# --- Simple in-memory cache ---
+cache = {"url": None, "ts": 0}
 
 
 async def fetch_photo_from_bot():
@@ -43,9 +45,10 @@ async def fetch_photo_from_bot():
 
 @app.route("/live-photo", methods=["GET"])
 def live_photo():
-    # Always fetch fresh — no caches
+    now = time.time()
+    if cache["url"] and (now - cache["ts"]) < 180:
+        return jsonify({"success": True, "url": cache["url"], "cached": True})
     loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
 
     try:
         photo_bytes = loop.run_until_complete(fetch_photo_from_bot())
@@ -60,6 +63,9 @@ def live_photo():
     import base64
     b64 = base64.b64encode(photo_bytes).decode("utf-8")
     data_url = f"data:image/jpeg;base64,{b64}"
+
+    cache["url"] = data_url
+    cache["ts"]  = time.time()
 
     return jsonify({"success": True, "url": data_url, "cached": False})
 
